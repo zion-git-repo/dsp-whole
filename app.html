@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSP Management Platform - Interactive Specifications</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4F46E5;
+            --secondary: #06B6D4;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --dark: #1F2937;
+            --gray: #6B7280;
+            --light: #F9FAFB;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .app {
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        /* Navigation */
+        .nav {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            overflow-x: auto;
+            padding: 0;
+        }
+
+        .nav-item {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: var(--light);
+            border-bottom-color: var(--primary);
+        }
+
+        .nav-item.active {
+            border-bottom-color: var(--primary);
+            color: var(--primary);
+            background: var(--light);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Section */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-color: var(--primary);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .card-description {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 2px solid var(--light);
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--gray);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Accordion */
+        .accordion {
+            margin: 1rem 0;
+        }
+
+        .accordion-item {
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header {
+            padding: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .accordion-header:hover {
+            background: #e5e7eb;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .accordion-item.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-item.open .accordion-content {
+            max-height: 5000px;
+        }
+
+        .accordion-body {
+            padding: 1.5rem;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        .accordion-body h4 {
+            color: var(--dark);
+            margin: 1rem 0 0.5rem 0;
+        }
+
+        .accordion-body ul {
+            margin-left: 1.5rem;
+        }
+
+        .accordion-body li {
+            margin: 0.5rem 0;
+        }
+
+        .accordion-body strong {
+            color: var(--dark);
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .code-block pre {
+            margin: 0;
+            white-space: pre;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-primary {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+        }
+
+        /* Feature List */
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            background: white;
+            border-left: 4px solid var(--primary);
+            padding: 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .feature-code {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Tree View */
+        .tree {
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+
+        .tree-item {
+            padding: 0.25rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .tree-item-sub {
+            padding-left: 3rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1.5rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-item {
+                padding: 1rem;
+            }
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Scroll to Top */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Main App Component
+        function App() {
+            const [activeSection, setActiveSection] = useState('overview');
+            const [showScrollTop, setShowScrollTop] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => {
+                    setShowScrollTop(window.scrollY > 300);
+                };
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const scrollToTop = () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            return (
+                <div className="app">
+                    <Header />
+                    <Navigation activeSection={activeSection} setActiveSection={setActiveSection} />
+                    <main className="container">
+                        {activeSection === 'overview' && <OverviewSection />}
+                        {activeSection === 'navigation' && <NavigationSection />}
+                        {activeSection === 'owner' && <OwnerSection />}
+                        {activeSection === 'manager' && <ManagerSection />}
+                        {activeSection === 'features' && <FeaturesSection />}
+                    </main>
+                    <div
+                        className={`scroll-top ${showScrollTop ? '' : 'hidden'}`}
+                        onClick={scrollToTop}
+                    >
+                        ↑
+                    </div>
+                </div>
+            );
+        }
+
+        // Header Component
+        function Header() {
+            return (
+                <header className="header">
+                    <h1>🚚 DSP Management Platform</h1>
+                    <p>Complete Feature Specifications & Information Architecture</p>
+                </header>
+            );
+        }
+
+        // Navigation Component
+        function Navigation({ activeSection, setActiveSection }) {
+            const sections = [
+                { id: 'overview', label: 'Overview' },
+                { id: 'navigation', label: 'Global Navigation' },
+                { id: 'owner', label: 'DSP Owner Role' },
+                { id: 'manager', label: 'Station Manager Role' },
+                { id: 'features', label: 'All Features' }
+            ];
+
+            return (
+                <nav className="nav">
+                    <div className="nav-container">
+                        {sections.map(section => (
+                            <div
+                                key={section.id}
+                                className={`nav-item ${activeSection === section.id ? 'active' : ''}`}
+                                onClick={() => setActiveSection(section.id)}
+                            >
+                                {section.label}
+                            </div>
+                        ))}
+                    </div>
+                </nav>
+            );
+        }
+
+        // Overview Section
+        function OverviewSection() {
+            return (
+                <div className="fade-in">
+                    <div className="section">
+                        <h2 className="section-title">📋 Document Purpose</h2>
+                        <p className="section-subtitle">
+                            This document provides comprehensive feature specifications organized by user role,
+                            defining the information architecture, screen hierarchy, user flows, and specific
+                            functionality requirements for UX designers and developers.
+                        </p>
+                    </div>
+
+                    <div className="section">
+                        <h2 className="section-title">📊 Platform Overview</h2>
+                        <div className="metrics-grid">
+                            <div className="metric-card">
+                                <div className="metric-value">2</div>
+                                <div className="metric-label">Documented Roles</div>
+                            </div>
+                            <div className="metric-card">
+                                <div className="metric-value">13</div>
+                                <div className="metric-label">Major Features</div>
+                            </div>
+                            <div className="metric-card">
+                                <div className="metric-value">100+</div>
+                                <div className="metric-label">Sub-Features</div>
+                            </div>
+                            <div className="metric-card">
+                                <div className="metric-value">24/7</div>
+                                <div className="metric-label">Real-time Monitoring</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="section">
+                        <h2 className="section-title">🎯 Core Capabilities</h2>
+                        <div className="card-grid">
+                            <div className="card">
+                                <div className="card-icon">📊</div>
+                                <h3 className="card-title">Performance Analytics</h3>
+                                <p className="card-description">
+                                    Track scorecard metrics, delivery rates, and operational KPIs with
+                                    real-time dashboards and 12-week trend analysis.
+                                </p>
+                            </div>
+                            <div className="card">
+                                <div className="card-icon">👥</div>
+                                <h3 className="card-title">Workforce Management</h3>
+                                <p className="card-description">
+                                    Complete driver lifecycle management including performance tracking,
+                                    scheduling, time tracking, and payroll processing.
+                                </p>
+                            </div>
+                            <div className="card">
+                                <div className="card-icon">🚗</div>
+                                <h3 className="card-title">Fleet Management</h3>
+                                <p className="card-description">
+                                    Monitor vehicle health, track maintenance schedules, optimize utilization,
+                                    and control costs with detailed analytics.
+                                </p>
+                            </div>
+                            <div className="card">
+                                <div className="card-icon">💰</div>
+                                <h3 className="card-title">Financial Oversight</h3>
+                                <p className="card-description">
+                                    Complete P&L tracking, expense categorization, budget management,
+                                    and cross-station financial comparisons.
+                                </p>
+                            </div>
+                            <div className="card">
+                                <div className="card-icon">🗺️</div>
+                                <h3 className="card-title">Route Management</h3>
+                                <p className="card-description">
+                                    Import routes from Amazon Cortex, smart auto-assignment, rescue
+                                    coordination, and route completion tracking.
+                                </p>
+                            </div>
+                            <div className="card">
+                                <div className="card-icon">🔔</div>
+                                <h3 className="card-title">Smart Alerts</h3>
+                                <p className="card-description">
+                                    Real-time notifications for critical issues, performance drops,
+                                    maintenance needs, and items requiring attention.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="section">
+                        <h2 className="section-title">🔗 Integrations</h2>
+                        <div className="card-grid">
+                            <div className="card">
+                                <div className="card-icon">📦</div>
+                                <h3 className="card-title">Amazon Cortex</h3>
+                                <p className="card-description">
+                                    Direct integration for route data, scorecard metrics, and performance tracking.
+                                </p>
+                            </div>
+                            <div className="card">
+                                <div className="card-icon">📱</div>
+                                <h3 className="card-title">Samsara</h3>
+                                <p className="card-description">
+                                    Vehicle telematics, safety events, camera footage, and driver behavior analysis.
+                                </p>
+                            </div>
+                            <div className="card">
+                                <div className="card-icon">🎥</div>
+                                <h3 className="card-title">Netradyne</h3>
+                                <p className="card-description">
+                                    AI-powered driver safety scoring, video event capture, and coaching workflows.
+                                </p>
+                            </div>
+                            <div className="card">
+                                <div className="card-icon">💼</div>
+                                <h3 className="card-title">ADP</h3>
+                                <p className="card-description">
+                                    Seamless payroll export with proper formatting for ADP processing.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Navigation Section
+        function NavigationSection() {
+            return (
+                <div className="fade-in">
+                    <div className="section">
+                        <h2 className="section-title">🧭 Global Navigation Structure</h2>
+                        <p className="section-subtitle">
+                            Top-level navigation available to all authenticated users
+                        </p>
+
+                        <div className="code-block">
+                            <pre>{`┌─────────────────────────────────────────────────────────────┐
+│  [LOGO]  Dashboard  |  My Role Menu  |  🔔 Notifications  │  👤 Profile  │
+└─────────────────────────────────────────────────────────────┘
+│                                                               │
+│  Station Selector: [Dropdown: All Stations / Station Name]  │
+│  Date Range: [Quick Select: Today | Week | Month | Custom]  │
+└─────────────────────────────────────────────────────────────┘`}</pre>
+                        </div>
+
+                        <h3 style={{marginTop: '2rem', marginBottom: '1rem'}}>Key Components</h3>
+
+                        <div className="card-grid">
+                            <div className="card">
+                                <div className="card-icon">🏢</div>
+                                <h3 className="card-title">Station Selector</h3>
+                                <ul style={{marginTop: '1rem', color: 'var(--gray)'}}>
+                                    <li>Multi-station DSPs see "All Stations" option</li>
+                                    <li>Single-station DSPs have this fixed</li>
+                                    <li>Context refreshes all data to selected station</li>
+                                    <li>Last selected station is remembered</li>
+                                </ul>
+                            </div>
+
+                            <div className="card">
+                                <div className="card-icon">🔔</div>
+                                <h3 className="card-title">Notification Center</h3>
+                                <ul style={{marginTop: '1rem', color: 'var(--gray)'}}>
+                                    <li>Real-time alerts for items requiring attention</li>
+                                    <li>Categorized: Critical, High, Medium, Low</li>
+                                    <li>Click to navigate directly to relevant screen</li>
+                                    <li>Mark as read/unread functionality</li>
+                                </ul>
+                            </div>
+
+                            <div className="card">
+                                <div className="card-icon">👤</div>
+                                <h3 className="card-title">Profile Menu</h3>
+                                <ul style={{marginTop: '1rem', color: 'var(--gray)'}}>
+                                    <li>Account Settings</li>
+                                    <li>Change Password</li>
+                                    <li>Notification Preferences</li>
+                                    <li>Help & Documentation</li>
+                                    <li>Sign Out</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Owner Section Component
+        function OwnerSection() {
+            return (
+                <div className="fade-in">
+                    <div className="section">
+                        <h2 className="section-title">👑 DSP Owner Role</h2>
+                        <p className="section-subtitle">
+                            Executive oversight across all stations with financial, operational, and strategic management capabilities
+                        </p>
+
+                        <div className="code-block">
+                            <pre>{`DSP Owner Dashboard
+│
+├── Executive Overview
+│   ├── Cross-Station Performance Summary
+│   ├── Financial Snapshot (All Stations)
+│   ├── Critical Alerts Dashboard
+│   └── Key Metrics Comparison
+│
+├── Stations Management
+│   ├── Station Directory
+│   ├── Station Performance Comparison
+│   ├── Station Configuration
+│   └── Station Analytics
+│
+├── Financial Management
+│   ├── Revenue Dashboard
+│   ├── Expense Tracking
+│   ├── P&L Reports
+│   ├── Payroll Summary (All Stations)
+│   └── Budget vs Actual
+│
+├── Fleet Overview (All Stations)
+│   ├── Total Fleet Status
+│   ├── Fleet Utilization Metrics
+│   ├── Maintenance Costs by Station
+│   └── Vehicle ROI Analysis
+│
+├── Workforce Overview (All Stations)
+│   ├── Total Headcount by Station
+│   ├── Driver Performance Leaderboard
+│   ├── Retention & Turnover Metrics
+│   └── Recruiting Pipeline
+│
+├── Performance Analytics
+│   ├── Scorecard Comparison (All Stations)
+│   ├── Trend Analysis
+│   ├── Benchmarking
+│   └── Root Cause Analysis
+│
+├── Reports & Export
+│   ├── Executive Reports
+│   ├── Custom Report Builder
+│   ├── Scheduled Report Delivery
+│   └── Data Export Tools
+│
+└── System Administration
+    ├── User Management (All Stations)
+    ├── Role & Permission Management
+    ├── Integration Settings
+    ├── Billing & Subscription
+    └── Audit Logs`}</pre>
+                        </div>
+                    </div>
+
+                    <OwnerFeatures />
+                </div>
+            );
+        }
+
+        // Owner Features Component
+        function OwnerFeatures() {
+            const [openFeature, setOpenFeature] = useState(null);
+
+            const features = [
+                {
+                    id: 'F-OWN-001',
+                    title: 'Executive Overview Dashboard',
+                    icon: '📊',
+                    content: {
+                        description: 'Real-time executive dashboard with hero metrics and critical alerts',
+                        components: [
+                            'Hero metrics: Routes, Drivers, Fleet availability, WTD revenue, Payroll projection, Average scorecard',
+                            'Station health indicator grid with Green/Yellow/Red status',
+                            'Critical alerts: Low scorecard metrics, unassigned routes, pending terminations, overdue maintenance',
+                            'Performance trend charts: 12-week scorecard, revenue, cost-per-delivery, headcount'
+                        ],
+                        actions: [
+                            'Click any metric for detailed breakdown',
+                            'Navigate to station details',
+                            'Navigate to alert resolution screens',
+                            'Filter by date range',
+                            'Export dashboard as PDF'
+                        ],
+                        dataRefresh: 'Real-time for today\'s metrics, nightly refresh for historical trends'
+                    }
+                },
+                {
+                    id: 'F-OWN-002',
+                    title: 'Station Performance Comparison',
+                    icon: '📈',
+                    content: {
+                        description: 'Compare and benchmark performance across all stations',
+                        metrics: [
+                            'Amazon scorecard composite score',
+                            'Delivery success rate',
+                            'POD compliance rate',
+                            'Safety events per 10k miles',
+                            'Customer feedback score',
+                            'Route completion rate',
+                            'Average cost per delivery',
+                            'Fuel efficiency (MPG)',
+                            'Driver retention rate',
+                            'Overtime percentage',
+                            'Maintenance cost per vehicle',
+                            'Revenue per route'
+                        ],
+                        visualizations: [
+                            'Radar chart comparing stations across multiple metrics',
+                            'Bar chart showing ranking by selected metric',
+                            'Trend lines showing improvement/decline by station'
+                        ],
+                        actions: [
+                            'Select/deselect metrics to compare',
+                            'Change time period',
+                            'Sort table by any column',
+                            'Export comparison report',
+                            'Schedule automated weekly comparison email'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-OWN-003',
+                    title: 'Financial Dashboard',
+                    icon: '💰',
+                    content: {
+                        description: 'Complete financial oversight with revenue, expenses, and profitability tracking',
+                        revenue: [
+                            'Current month revenue vs target (progress bar)',
+                            'Revenue by station (pie chart)',
+                            'Revenue trend (12-month line chart)',
+                            'Revenue per route calculation',
+                            'Contract renewal dates and values'
+                        ],
+                        expenses: [
+                            'Payroll (largest category, highlighted)',
+                            'Fuel costs',
+                            'Vehicle maintenance',
+                            'Vehicle leases/payments',
+                            'Insurance',
+                            'Station rent/utilities',
+                            'Equipment and supplies',
+                            'Other operational costs'
+                        ],
+                        profitability: [
+                            'Gross profit margin',
+                            'Net profit margin',
+                            'EBITDA calculation',
+                            'Profit by station',
+                            'Breakeven analysis'
+                        ],
+                        actions: [
+                            'Drill down into any expense category',
+                            'View transaction details',
+                            'Export financial reports (CSV, Excel, PDF)',
+                            'Set budget alerts',
+                            'Compare periods',
+                            'Annotate unusual expenses'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-OWN-004',
+                    title: 'Fleet Overview',
+                    icon: '🚗',
+                    content: {
+                        description: 'Complete fleet management across all stations',
+                        status: [
+                            'Active in Service: 120 (80%) 🟢',
+                            'In Repair: 15 (10%) 🟡',
+                            'Scheduled Maintenance: 8 (5%) 🟡',
+                            'On Rent (Temporary): 5 (3%) 🔵',
+                            'Retired/Sold: 2 (1%) ⚫'
+                        ],
+                        metrics: [
+                            'Average vehicle age by station',
+                            'Average odometer reading',
+                            'Vehicles over 100k miles count',
+                            'Vehicles overdue for oil change',
+                            'Average days in repair shop',
+                            'Most/least reliable vehicles'
+                        ],
+                        costAnalysis: [
+                            'Total fleet maintenance costs',
+                            'Maintenance cost per vehicle per month',
+                            'Maintenance cost by station',
+                            'ROI analysis (cost vs vehicle age)'
+                        ],
+                        utilization: [
+                            'Vehicles used today / total available',
+                            'Average daily utilization % by station',
+                            'Vehicles not used in last 7/30 days'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-OWN-005',
+                    title: 'Workforce Overview',
+                    icon: '👥',
+                    content: {
+                        description: 'People analytics and workforce management across all stations',
+                        headcount: [
+                            'Active: 165 (91.7%) 🟢',
+                            'On Leave: 5 (2.8%) 🔵',
+                            'Inactive: 7 (3.9%) 🟡',
+                            'Terminated: 3 (1.7%) 🔴',
+                            'New Hires (Last 30 Days): 12',
+                            'Terminations (Last 30 Days): 8'
+                        ],
+                        leaderboard: [
+                            'Top 10 drivers by composite score',
+                            'Bottom 10 drivers requiring attention',
+                            'Most improved drivers (month over month)'
+                        ],
+                        retention: [
+                            'Average driver tenure',
+                            '30-day retention rate',
+                            '90-day retention rate',
+                            '6-month retention rate',
+                            'Retention rate by station comparison',
+                            'Voluntary vs involuntary termination breakdown'
+                        ],
+                        recruiting: [
+                            'Open positions by station',
+                            'Applications in review',
+                            'Candidates in onboarding',
+                            'Average time to hire',
+                            'Cost per hire'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-OWN-006',
+                    title: 'Cross-Station Scorecard Analytics',
+                    icon: '🎯',
+                    content: {
+                        description: 'Weekly scorecard analysis and benchmarking across all stations',
+                        metrics: [
+                            'Delivery Completion Rate',
+                            'Delivered Not Received (DNR)',
+                            'Photo On Delivery (POD)',
+                            'Customer Escalations',
+                            'Mentor Feedback Score',
+                            'Overall Score'
+                        ],
+                        analysis: [
+                            '12-week trend lines for each metric by station',
+                            'Identify improving vs declining stations',
+                            'Seasonal pattern recognition',
+                            'Anomaly detection (sudden drops)'
+                        ],
+                        benchmarking: [
+                            'Compare stations to each other',
+                            'Identify best practices from top performers',
+                            'Root cause analysis for underperformers',
+                            'Correlation analysis'
+                        ],
+                        actions: [
+                            'Download weekly scorecards',
+                            'Set up automated scorecard distribution',
+                            'Create custom metric combinations',
+                            'Schedule performance reviews'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-OWN-007',
+                    title: 'System Administration',
+                    icon: '⚙️',
+                    content: {
+                        description: 'Complete system control and configuration',
+                        userManagement: [
+                            'List all users across all stations',
+                            'View: Name, email, role, station(s), last login',
+                            'Add new user with role assignment',
+                            'Edit user permissions',
+                            'Deactivate/reactivate users',
+                            'Reset user passwords',
+                            'View user activity logs'
+                        ],
+                        roles: [
+                            'Predefined roles: Owner, Station Manager, Dispatcher, HR Admin, Fleet Manager, Driver',
+                            'View permissions matrix for each role',
+                            'Create custom roles',
+                            'Assign role to multiple users (bulk action)'
+                        ],
+                        integrations: [
+                            'Amazon Cortex integration status',
+                            'Samsara API connection status',
+                            'Netradyne API connection status',
+                            'ADP export configuration',
+                            'Data sync schedules and last sync times',
+                            'Error logs for failed integrations'
+                        ],
+                        billing: [
+                            'Current subscription plan',
+                            'Active stations, users, vehicles count',
+                            'Usage statistics',
+                            'Invoice history',
+                            'Payment method management',
+                            'Upgrade/downgrade subscription'
+                        ],
+                        audit: [
+                            'All system activities with user, timestamp, action',
+                            'Filter by: user, action type, date range, station',
+                            'Export audit logs for compliance',
+                            'Critical actions highlighted'
+                        ]
+                    }
+                }
+            ];
+
+            return (
+                <div className="section">
+                    <h2 className="section-title">🎯 Owner Features (7 Major Features)</h2>
+                    <div className="accordion">
+                        {features.map((feature) => (
+                            <AccordionItem
+                                key={feature.id}
+                                feature={feature}
+                                isOpen={openFeature === feature.id}
+                                toggle={() => setOpenFeature(openFeature === feature.id ? null : feature.id)}
+                            />
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        // Accordion Item Component
+        function AccordionItem({ feature, isOpen, toggle }) {
+            return (
+                <div className={`accordion-item ${isOpen ? 'open' : ''}`}>
+                    <div className="accordion-header" onClick={toggle}>
+                        <span>
+                            {feature.icon} <strong>{feature.id}:</strong> {feature.title}
+                        </span>
+                        <span className="accordion-icon">▼</span>
+                    </div>
+                    <div className="accordion-content">
+                        <div className="accordion-body">
+                            <p><strong>{feature.content.description}</strong></p>
+
+                            {Object.entries(feature.content).map(([key, value]) => {
+                                if (key === 'description') return null;
+                                if (!Array.isArray(value)) return null;
+
+                                return (
+                                    <div key={key}>
+                                        <h4>{key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}</h4>
+                                        <ul>
+                                            {value.map((item, idx) => (
+                                                <li key={idx}>{item}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                );
+                            })}
+
+                            <div style={{marginTop: '1rem'}}>
+                                <span className="badge badge-primary">{feature.id}</span>
+                                <span className="badge badge-success">Real-time Updates</span>
+                                <span className="badge badge-warning">Export Available</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Manager Section (Similar structure but with manager-specific features)
+        function ManagerSection() {
+            const [openFeature, setOpenFeature] = useState(null);
+
+            const managerFeatures = [
+                {
+                    id: 'F-MGR-001',
+                    title: 'Today\'s Operations Dashboard',
+                    icon: '📅',
+                    content: {
+                        description: 'Real-time operational status dashboard for daily management',
+                        components: [
+                            'Route Dispatch Status: Routes today, assigned, dispatched, completed',
+                            'Driver Attendance: Expected, clocked in, on route, absent',
+                            'Vehicle Status: Available, on route, in repair, maintenance',
+                            'Critical Alerts: Unassigned routes, safety issues, absences, overtime alerts',
+                            'Routes Needing Rescue/Support',
+                            'Performance Snapshot: Real-time delivery rate, POD compliance, safety events'
+                        ],
+                        realTimeUpdates: [
+                            'Route status updates every 5 minutes',
+                            'Driver clock-in/out updates immediately',
+                            'New alerts appear at top with notification',
+                            'Rescue requests trigger immediate alert'
+                        ],
+                        actions: [
+                            'Click metrics for detailed list',
+                            'Navigate to resolution screens',
+                            'Assign rescue to route',
+                            'Send message to driver',
+                            'Mark alerts as acknowledged/resolved'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-MGR-002',
+                    title: 'Route Upload & Assignment Workflow',
+                    icon: '🗺️',
+                    content: {
+                        description: 'Complete route management from CSV import to driver assignment',
+                        step1: [
+                            'Upload CSV file from Cortex or drag & drop',
+                            'CSV validation: Route ID, Estimated Packages, Duration, Route Type',
+                            'Preview parsed data before importing',
+                            'View recent uploads history'
+                        ],
+                        step2Assignment: [
+                            'Drag-and-drop interface for route assignment',
+                            'Driver grid showing: Status, availability, performance rating (out of 5)',
+                            'Smart Auto-Assign logic based on performance, experience, workload balance',
+                            'Color coding for route difficulty',
+                            'Warning indicators for suboptimal assignments',
+                            'Conflict detection (driver off, vehicle not ready, over hours)'
+                        ],
+                        features: [
+                            'Bulk assign by route type',
+                            'Save draft assignments (not published)',
+                            'Publish assignments to notify drivers',
+                            'Add special instructions to routes',
+                            'Swap assignments between drivers',
+                            'Export assignment sheet (PDF/Excel)'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-MGR-003',
+                    title: 'Driver Directory & Profiles',
+                    icon: '👤',
+                    content: {
+                        description: 'Complete driver lifecycle management with detailed 10-tab profiles',
+                        directory: [
+                            'Search and filter by status, performance, availability',
+                            'Table view with performance ratings (star system)',
+                            'Quick stats: Total, Active, Inactive, On Leave, Terminated',
+                            'Quick actions: View profile, Send message'
+                        ],
+                        profileTabs: [
+                            'Overview: Personal info, current status, performance summary, recent activity',
+                            'Routes: Route history, filters, analytics (avg duration, packages)',
+                            'Performance: Scorecard metrics with trends, DNR/POD incident breakdown',
+                            'Safety: Safety score, events by type, video links, coaching status',
+                            'Vehicles: Current vehicle, usage history, issues reported, vehicle care score',
+                            'Fuel: 30-day summary, purchase history with OCR, fuel analytics, GPS verification',
+                            'Time & Attendance: Pay period summary, time entries, payroll calculation, overtime alerts',
+                            'Coaching: Coaching history, effectiveness analysis, driver response tracking',
+                            'Certifications: Driver license, defensive driving, Amazon training, background check',
+                            'Documents: Onboarding, certifications, performance docs, payroll docs'
+                        ],
+                        actions: [
+                            'Edit personal information',
+                            'Update employment status',
+                            'Initiate coaching session',
+                            'Export driver profile report (PDF)',
+                            'Compare driver to others'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-MGR-004',
+                    title: 'Fleet & Vehicle Management',
+                    icon: '🚐',
+                    content: {
+                        description: 'Complete vehicle management with 7-tab detailed profiles',
+                        directory: [
+                            'Search and filter by status, maintenance, type',
+                            'Quick stats: Total fleet, active, in repair, overdue maintenance',
+                            'Card or table view with vehicle details',
+                            'Actions: View details, schedule maintenance, report issue'
+                        ],
+                        vehicleTabs: [
+                            'Overview: Vehicle info, acquisition details, current status, maintenance status',
+                            'Maintenance History: Upcoming maintenance, completed history with invoices',
+                            'Active Issues: Current issues, recently resolved, issue statistics',
+                            'Assignments: Primary driver, assignment history, recent route usage',
+                            'Costs: Total cost of ownership, 12-month breakdown, ROI analysis',
+                            'Inspections: Pre-trip inspections (30 days), annual state inspection',
+                            'Documents: Ownership, registration, insurance, maintenance records'
+                        ],
+                        features: [
+                            'Schedule maintenance appointments',
+                            'Report new issues with photos/audio',
+                            'Track downtime and repair costs',
+                            'View fuel efficiency trends',
+                            'Cost per mile calculations',
+                            'Utilization rate tracking'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-MGR-005',
+                    title: 'Payroll Management',
+                    icon: '💵',
+                    content: {
+                        description: 'Complete payroll processing with time tracking and ADP export',
+                        dashboard: [
+                            'Current pay period status',
+                            'Total hours: Regular, Overtime, Holiday',
+                            'Estimated gross pay',
+                            'Overtime percentage',
+                            'Alerts: Drivers approaching 40 hours, missing entries'
+                        ],
+                        timeTracking: [
+                            'Detailed time entries for all drivers',
+                            'Clock in/out times with breaks (30m unpaid lunch, 2x15m paid)',
+                            'Weekly payroll calculation (40 hrs regular, OT beyond)',
+                            'Approval workflow for time entries',
+                            'Edit capabilities with audit trail'
+                        ],
+                        adpExport: [
+                            'Pre-export validation checks',
+                            'ADP Standard CSV format',
+                            'Include: Regular hours, OT hours, Holiday hours, Employee IDs',
+                            'Preview sample data before export',
+                            'Record of export with timestamp and user',
+                            'Options: Download, email to HR, upload to ADP portal'
+                        ],
+                        actions: [
+                            'Review and approve hours',
+                            'Edit time entries',
+                            'Contact drivers about missing entries',
+                            'Export to ADP',
+                            'View historical payroll'
+                        ]
+                    }
+                },
+                {
+                    id: 'F-MGR-006',
+                    title: 'Performance Management & Scorecard',
+                    icon: '📈',
+                    content: {
+                        description: 'Complete performance tracking with 4 main tabs',
+                        scorecardTab: [
+                            'Upload weekly scorecard CSV from Cortex',
+                            'Overall score out of 1000 with tier status (Fantastic/Good/Needs Improvement)',
+                            'Regional rank and week-over-week change',
+                            'Detailed breakdown: Customer Delivery (400pts), POD (200pts), Mentor (200pts), Customer Feedback (100pts), Compliance (100pts)',
+                            '12-week performance trend chart',
+                            'Action items prioritized by urgency'
+                        ],
+                        podTab: [
+                            'Overall POD rate and total deliveries',
+                            'POD issues breakdown by type: Missing, poor lighting, vehicle in frame, etc.',
+                            'Top offenders requiring coaching',
+                            'Drivers with perfect POD (recognition)',
+                            '12-week POD trend analysis',
+                            'Sample flagged photos with thumbnails'
+                        ],
+                        safetyTab: [
+                            'Safety event queue requiring review',
+                            'Filter: All Events, Pending Review, Coaching Required, Completed',
+                            'Each event shows: Type, driver, date, vehicle, severity, video link',
+                            'Auto-analysis from Netradyne/Samsara',
+                            'Review actions: Coaching Required, No Action, Add Notes, Dispute',
+                            'Safety statistics by type and severity',
+                            'Driver safety leaderboard (safest and requiring attention)',
+                            '12-week safety trend chart'
+                        ],
+                        coachingTab: [
+                            'Coaching pipeline: Pending, Scheduled, Completed, Acknowledged',
+                            'Pending coaching with urgency levels (Urgent Overdue, High, Medium, Low)',
+                            'Scheduled coaching sessions',
+                            'Completed coaching awaiting driver signature',
+                            'Coaching analytics: Sessions per month, completion time, driver response rate',
+                            'Most common coaching topics',
+                            'Coaching effectiveness: % showing improvement'
+                        ]
+                    }
+                }
+            ];
+
+            return (
+                <div className="fade-in">
+                    <div className="section">
+                        <h2 className="section-title">🎯 Station Manager Role</h2>
+                        <p className="section-subtitle">
+                            Day-to-day operations management for a single station including dispatch, drivers, fleet, and performance
+                        </p>
+
+                        <div className="code-block">
+                            <pre>{`Station Manager Dashboard
+│
+├── Today's Operations
+│   ├── Route Dispatch Status
+│   ├── Driver Attendance
+│   ├── Vehicle Readiness
+│   └── Real-time Alerts
+│
+├── Dispatch Management
+│   ├── Upload Routes from Cortex
+│   ├── Assign Routes to Drivers
+│   ├── Rescue Coordination
+│   ├── Route History
+│   └── Dispatch Analytics
+│
+├── Driver Management
+│   ├── Driver Directory
+│   ├── Driver Performance
+│   ├── Coaching & Discipline
+│   ├── Attendance & Time Tracking
+│   └── Driver Onboarding
+│
+├── Fleet Management
+│   ├── Vehicle Directory
+│   ├── Maintenance Requests
+│   ├── Vehicle Issues & Repairs
+│   ├── Fuel Tracking
+│   └── Vehicle Inspections
+│
+├── Payroll Management
+│   ├── Current Pay Period Summary
+│   ├── Review & Approve Hours
+│   ├── Overtime Management
+│   ├── Export to ADP
+│   └── Payroll History
+│
+├── Performance Management
+│   ├── Weekly Scorecard
+│   ├── POD Metrics
+│   ├── Safety Events (Samsara/Netradyne)
+│   ├── Coaching Queue
+│   └── Performance Reports
+│
+├── Scheduling
+│   ├── Driver Availability Calendar
+│   ├── Route Coverage Planning
+│   ├── Schedule Requests
+│   └── Shift Templates
+│
+├── Communication
+│   ├── Driver Messages
+│   ├── Coaching Templates
+│   ├── Announcements
+│   └── Call Logs
+│
+└── Station Analytics
+    ├── Station Health Dashboard
+    ├── Operational Reports
+    ├── Custom Analytics
+    └── Export Center`}</pre>
+                        </div>
+                    </div>
+
+                    <div className="section">
+                        <h2 className="section-title">🎯 Manager Features (6 Major Features)</h2>
+                        <div className="accordion">
+                            {managerFeatures.map((feature) => (
+                                <AccordionItem
+                                    key={feature.id}
+                                    feature={feature}
+                                    isOpen={openFeature === feature.id}
+                                    toggle={() => setOpenFeature(openFeature === feature.id ? null : feature.id)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Features Section
+        function FeaturesSection() {
+            return (
+                <div className="fade-in">
+                    <div className="section">
+                        <h2 className="section-title">🔧 All Platform Features</h2>
+                        <p className="section-subtitle">
+                            Complete feature list organized by role
+                        </p>
+
+                        <h3>DSP Owner Features (7)</h3>
+                        <div className="feature-list">
+                            {[
+                                { code: 'F-OWN-001', title: 'Executive Overview Dashboard', description: 'Real-time executive metrics and critical alerts' },
+                                { code: 'F-OWN-002', title: 'Station Performance Comparison', description: 'Compare and benchmark across all stations' },
+                                { code: 'F-OWN-003', title: 'Financial Dashboard', description: 'Revenue, expenses, P&L, profitability tracking' },
+                                { code: 'F-OWN-004', title: 'Fleet Overview', description: 'Fleet status, costs, utilization across all stations' },
+                                { code: 'F-OWN-005', title: 'Workforce Overview', description: 'Headcount, leaderboard, retention, recruiting pipeline' },
+                                { code: 'F-OWN-006', title: 'Cross-Station Scorecard Analytics', description: 'Weekly scorecard analysis and benchmarking' },
+                                { code: 'F-OWN-007', title: 'System Administration', description: 'User management, roles, integrations, billing, audit logs' }
+                            ].map(feature => (
+                                <div key={feature.code} className="feature-item">
+                                    <div className="feature-code">{feature.code}</div>
+                                    <div className="feature-title">{feature.title}</div>
+                                    <div className="card-description">{feature.description}</div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <h3 style={{marginTop: '3rem'}}>Station Manager Features (6)</h3>
+                        <div className="feature-list">
+                            {[
+                                { code: 'F-MGR-001', title: 'Today\'s Operations Dashboard', description: 'Real-time route, driver, vehicle status with alerts' },
+                                { code: 'F-MGR-002', title: 'Route Upload & Assignment Workflow', description: 'CSV import, smart auto-assign, drag-and-drop assignment' },
+                                { code: 'F-MGR-003', title: 'Driver Directory & Profiles', description: '10-tab comprehensive driver profiles with complete history' },
+                                { code: 'F-MGR-004', title: 'Fleet & Vehicle Management', description: '7-tab vehicle profiles with maintenance and cost tracking' },
+                                { code: 'F-MGR-005', title: 'Payroll Management', description: 'Time tracking, approval workflow, ADP export' },
+                                { code: 'F-MGR-006', title: 'Performance Management & Scorecard', description: '4-tab system: Scorecard, POD, Safety, Coaching' }
+                            ].map(feature => (
+                                <div key={feature.code} className="feature-item">
+                                    <div className="feature-code">{feature.code}</div>
+                                    <div className="feature-title">{feature.title}</div>
+                                    <div className="card-description">{feature.description}</div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div style={{marginTop: '3rem', padding: '2rem', background: 'var(--light)', borderRadius: '12px'}}>
+                            <h3 style={{marginBottom: '1rem'}}>📝 Additional Roles (Not Yet Documented)</h3>
+                            <p style={{color: 'var(--gray)', marginBottom: '1rem'}}>
+                                The following roles are mentioned but not yet fully specified in the documentation:
+                            </p>
+                            <div className="card-grid">
+                                <div className="card">
+                                    <div className="card-icon">📋</div>
+                                    <h3 className="card-title">Dispatcher</h3>
+                                    <p className="card-description">Focused on daily route operations</p>
+                                    <span className="badge badge-warning">Planned</span>
+                                </div>
+                                <div className="card">
+                                    <div className="card-icon">🚚</div>
+                                    <h3 className="card-title">Driver</h3>
+                                    <p className="card-description">Mobile app features</p>
+                                    <span className="badge badge-warning">Planned</span>
+                                </div>
+                                <div className="card">
+                                    <div className="card-icon">🔧</div>
+                                    <h3 className="card-title">Fleet Manager</h3>
+                                    <p className="card-description">Vehicle-centric view</p>
+                                    <span className="badge badge-warning">Planned</span>
+                                </div>
+                                <div className="card">
+                                    <div className="card-icon">👔</div>
+                                    <h3 className="card-title">HR Administrator</h3>
+                                    <p className="card-description">People operations focus</p>
+                                    <span className="badge badge-warning">Planned</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render App
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
