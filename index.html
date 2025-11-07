@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSP Management Platform - Complete Solution for Delivery Service Partners</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4F46E5;
+            --secondary-color: #06B6D4;
+            --accent-color: #F59E0B;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+            --danger-color: #EF4444;
+            --dark: #1F2937;
+            --light: #F9FAFB;
+            --gray: #6B7280;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            box-shadow: 0 4px 30px rgba(0,0,0,0.15);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Section Styles */
+        .section {
+            margin-bottom: 6rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .feature-description {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        /* Role Sections */
+        .role-section {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .role-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .role-icon {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 1.5rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .role-title {
+            font-size: 2.5rem;
+            color: var(--dark);
+        }
+
+        .role-description {
+            font-size: 1.1rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+
+        /* Accordion */
+        .accordion {
+            margin-top: 2rem;
+        }
+
+        .accordion-item {
+            background: var(--light);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: #e5e7eb;
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 2000px;
+        }
+
+        .accordion-body {
+            padding: 1.5rem;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(79, 70, 229, 0.4);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Navigation Architecture */
+        .nav-architecture {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+        }
+
+        .nav-level {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-item {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin: 0.5rem 0;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-sub-item {
+            margin-left: 2rem;
+            border-left-color: var(--secondary-color);
+            font-size: 0.95rem;
+        }
+
+        /* Features List */
+        .features-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+
+        .feature-item h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-item ul {
+            margin-left: 1.5rem;
+            color: var(--gray);
+        }
+
+        .feature-item li {
+            margin: 0.5rem 0;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 0.25rem;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .badge-yellow {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .badge-red {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .role-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            z-index: 999;
+            transition: width 0.1s ease;
+        }
+
+        /* Code-like display */
+        .code-display {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 2rem;
+            border-radius: 15px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 2rem 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .code-display pre {
+            margin: 0;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Indicator -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+
+    <!-- Navigation -->
+    <nav id="mainNav">
+        <div class="nav-container">
+            <div class="logo">🚚 DSP Management Platform</div>
+            <ul class="nav-links">
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#roles">User Roles</a></li>
+                <li><a href="#navigation">Navigation</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Complete DSP Management Solution</h1>
+            <p>Streamline operations, optimize performance, and scale your delivery service partner business with our comprehensive management platform</p>
+            <div class="cta-buttons">
+                <a href="#features" class="btn btn-primary">Explore Features</a>
+                <a href="#roles" class="btn btn-secondary">View User Roles</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">User Roles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Features</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Real-time Monitoring</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Cloud-based</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overview Section -->
+    <div class="container" id="overview">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">What is DSP Management Platform?</h2>
+                <p class="section-subtitle">A comprehensive solution designed for Delivery Service Partners to manage operations, workforce, fleet, and financial performance across single or multiple stations.</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Performance Analytics</h3>
+                    <p class="feature-description">Track scorecard metrics, delivery rates, and operational KPIs with real-time dashboards and trend analysis.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-title">Workforce Management</h3>
+                    <p class="feature-description">Manage drivers, track performance, handle scheduling, and streamline payroll processing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🚗</div>
+                    <h3 class="feature-title">Fleet Management</h3>
+                    <p class="feature-description">Monitor vehicle health, track maintenance, optimize utilization, and control costs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h3 class="feature-title">Financial Oversight</h3>
+                    <p class="feature-description">Revenue tracking, expense management, P&L reports, and budget analysis.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h3 class="feature-title">Route Management</h3>
+                    <p class="feature-description">Import routes from Amazon Cortex, assign to drivers, coordinate rescues, and track completion.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3 class="feature-title">Smart Alerts</h3>
+                    <p class="feature-description">Real-time notifications for critical issues, performance drops, and items requiring attention.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Navigation -->
+    <div class="container" id="navigation">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Global Navigation Structure</h2>
+                <p class="section-subtitle">Intuitive navigation designed for efficient workflow across all user roles</p>
+            </div>
+
+            <div class="code-display">
+                <pre>
+┌─────────────────────────────────────────────────────────────┐
+│  🚚 LOGO   Dashboard  |  My Role Menu  |  🔔 Notifications  │  👤 Profile  │
+└─────────────────────────────────────────────────────────────┘
+│                                                               │
+│  Station Selector: [Dropdown: All Stations / Station Name]  │
+│  Date Range: [Quick Select: Today | Week | Month | Custom]  │
+└─────────────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🏢</div>
+                    <h3 class="feature-title">Station Selector</h3>
+                    <p class="feature-description">Multi-station DSPs can view aggregated data or drill down into individual stations. Context is preserved across sessions.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔔</div>
+                    <h3 class="feature-title">Notification Center</h3>
+                    <p class="feature-description">Real-time alerts categorized by urgency with direct navigation to action items.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👤</div>
+                    <h3 class="feature-title">Profile Menu</h3>
+                    <p class="feature-description">Quick access to settings, preferences, help documentation, and account management.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Roles Section -->
+    <div class="container" id="roles">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">User Roles & Capabilities</h2>
+                <p class="section-subtitle">Role-based access with tailored dashboards and features for each user type</p>
+            </div>
+
+            <!-- DSP Owner Role -->
+            <div class="role-section">
+                <div class="role-header">
+                    <div class="role-icon">👑</div>
+                    <div>
+                        <h2 class="role-title">DSP Owner</h2>
+                        <p class="role-description">Executive oversight across all stations with financial, operational, and strategic management capabilities</p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>📊 Executive Overview Dashboard</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Real-time Performance Metrics</h4>
+                                <ul>
+                                    <li><strong>Hero Metrics:</strong> Total active routes, drivers, fleet availability, WTD revenue, payroll projection, average scorecard</li>
+                                    <li><strong>Station Health Grid:</strong> Visual status of all stations with health scores (Green/Yellow/Red)</li>
+                                    <li><strong>Critical Alerts:</strong> Scorecard issues, unassigned routes, pending terminations, overdue maintenance, expiring certifications</li>
+                                    <li><strong>Trend Charts:</strong> 12-week scorecard, revenue, cost-per-delivery, and headcount trends</li>
+                                </ul>
+                                <div style="margin-top: 1rem;">
+                                    <span class="badge badge-green">Real-time Updates</span>
+                                    <span class="badge badge-yellow">PDF Export</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🏢 Station Performance Comparison</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Compare & Benchmark Stations</h4>
+                                <ul>
+                                    <li>Multi-metric comparison across all stations</li>
+                                    <li>Visualizations: Radar charts, bar charts, trend lines</li>
+                                    <li>12+ comparable metrics including delivery rate, safety, costs, retention</li>
+                                    <li>Identify best practices from top performers</li>
+                                    <li>Root cause analysis for underperformers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>💰 Financial Management</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Complete Financial Oversight</h4>
+                                <ul>
+                                    <li><strong>Revenue:</strong> Monthly tracking, per-route calculations, contract management</li>
+                                    <li><strong>Expenses:</strong> Detailed breakdown by category (payroll, fuel, maintenance, etc.)</li>
+                                    <li><strong>Profitability:</strong> Gross margin, net margin, EBITDA, breakeven analysis</li>
+                                    <li><strong>Payroll:</strong> Cross-station summary, overtime tracking, cost analysis</li>
+                                </ul>
+                                <div style="margin-top: 1rem;">
+                                    <span class="badge badge-green">Budget Alerts</span>
+                                    <span class="badge badge-yellow">Export: CSV/Excel/PDF</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🚗 Fleet Overview</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Complete Fleet Management</h4>
+                                <ul>
+                                    <li><strong>Status Tracking:</strong> Active, in repair, maintenance, rental vehicles</li>
+                                    <li><strong>Metrics:</strong> Utilization rates, average age, odometer readings, overdue maintenance alerts</li>
+                                    <li><strong>Cost Analysis:</strong> Maintenance costs per vehicle, by station, ROI analysis</li>
+                                    <li><strong>Optimization:</strong> Identify underutilized vehicles and candidates for sale</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>👥 Workforce Overview</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>People Analytics & Management</h4>
+                                <ul>
+                                    <li><strong>Headcount Dashboard:</strong> Active, on leave, inactive, terminated status tracking</li>
+                                    <li><strong>Performance Leaderboard:</strong> Top/bottom performers across all stations</li>
+                                    <li><strong>Retention Metrics:</strong> 30/90/180-day retention rates, turnover analysis</li>
+                                    <li><strong>Recruiting Pipeline:</strong> Open positions, applications, time-to-hire, cost-per-hire</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>⚙️ System Administration</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Complete System Control</h4>
+                                <ul>
+                                    <li><strong>User Management:</strong> Add, edit, deactivate users across all stations</li>
+                                    <li><strong>Permissions:</strong> Role-based access control and custom role creation</li>
+                                    <li><strong>Integrations:</strong> Amazon Cortex, Samsara, Netradyne, ADP connections</li>
+                                    <li><strong>Billing:</strong> Subscription management, usage tracking, invoice history</li>
+                                    <li><strong>Audit Logs:</strong> Complete activity tracking for compliance</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Station Manager Role -->
+            <div class="role-section">
+                <div class="role-header">
+                    <div class="role-icon">🎯</div>
+                    <div>
+                        <h2 class="role-title">Station Manager</h2>
+                        <p class="role-description">Day-to-day operations management for a single station including dispatch, drivers, fleet, and performance</p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>📅 Today's Operations Dashboard</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Real-time Operational Status</h4>
+                                <ul>
+                                    <li><strong>Route Status:</strong> Total routes, assigned, dispatched, completed</li>
+                                    <li><strong>Driver Attendance:</strong> Expected, clocked in, on route, absent</li>
+                                    <li><strong>Vehicle Readiness:</strong> Available, in use, maintenance, issues</li>
+                                    <li><strong>Critical Alerts:</strong> Unassigned routes, late drivers, vehicle problems, rescue needs</li>
+                                </ul>
+                                <div style="margin-top: 1rem;">
+                                    <span class="badge badge-green">Live Updates</span>
+                                    <span class="badge badge-yellow">Quick Actions</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🗺️ Dispatch Management</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Route Assignment & Coordination</h4>
+                                <ul>
+                                    <li>Import routes from Amazon Cortex via CSV or API</li>
+                                    <li>Smart route assignment based on driver performance & preferences</li>
+                                    <li>Rescue coordination and reassignment tools</li>
+                                    <li>Route history and analytics</li>
+                                    <li>Bulk assignment and templates for recurring routes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>👤 Driver Management</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Complete Driver Lifecycle</h4>
+                                <ul>
+                                    <li><strong>Driver Directory:</strong> Complete profiles with performance, attendance, certifications</li>
+                                    <li><strong>Performance Tracking:</strong> Scorecard metrics, coaching history, improvement trends</li>
+                                    <li><strong>Coaching & Discipline:</strong> Document counseling, warnings, disciplinary actions</li>
+                                    <li><strong>Time Tracking:</strong> Clock in/out, hours worked, overtime management</li>
+                                    <li><strong>Onboarding:</strong> New hire checklist, training progress, documentation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🚐 Fleet Management</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Vehicle Operations</h4>
+                                <ul>
+                                    <li>Vehicle directory with complete maintenance history</li>
+                                    <li>Maintenance request submission and tracking</li>
+                                    <li>Issue reporting and repair status monitoring</li>
+                                    <li>Fuel tracking and efficiency monitoring</li>
+                                    <li>Daily vehicle inspection checklists</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>💵 Payroll Management</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Time & Pay Processing</h4>
+                                <ul>
+                                    <li>Review and approve hours worked for current pay period</li>
+                                    <li>Edit time entries with audit trail</li>
+                                    <li>Overtime tracking and management</li>
+                                    <li>Export to ADP with formatting validation</li>
+                                    <li>Payroll history and reporting</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>📈 Performance Management</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Station Performance Tracking</h4>
+                                <ul>
+                                    <li><strong>Weekly Scorecard:</strong> All Amazon metrics with trend analysis</li>
+                                    <li><strong>POD Metrics:</strong> Photo compliance tracking and improvement</li>
+                                    <li><strong>Safety Events:</strong> Integrated Samsara/Netradyne data with coaching workflows</li>
+                                    <li><strong>Coaching Queue:</strong> Drivers requiring attention with priorities</li>
+                                    <li><strong>Reports:</strong> Custom performance reports and exports</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dispatcher Role -->
+            <div class="role-section">
+                <div class="role-header">
+                    <div class="role-icon">📋</div>
+                    <div>
+                        <h2 class="role-title">Dispatcher</h2>
+                        <p class="role-description">Focused on daily route execution, driver coordination, and real-time operational support</p>
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🎯 Dispatch Dashboard</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Today's Route Operations</h4>
+                                <ul>
+                                    <li>Visual route board showing all routes for the day</li>
+                                    <li>Assignment status: Assigned, dispatched, in progress, completed</li>
+                                    <li>Quick actions: assign, reassign, mark dispatched, call driver</li>
+                                    <li>Driver availability and status at a glance</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>🚨 Rescue Coordination</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Real-time Support Management</h4>
+                                <ul>
+                                    <li>Identify drivers falling behind schedule</li>
+                                    <li>Match available drivers for rescue operations</li>
+                                    <li>Track rescue requests and completion</li>
+                                    <li>Communication tools for driver coordination</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>📞 Driver Communication</span>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                <h4>Messaging & Alerts</h4>
+                                <ul>
+                                    <li>Send messages to individual or groups of drivers</li>
+                                    <li>Call logging for documentation</li>
+                                    <li>Pre-built message templates for common situations</li>
+                                    <li>Delivery notifications and alerts</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container" id="features">
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Key Platform Features</h2>
+                <p class="section-subtitle">Comprehensive tools designed for every aspect of DSP operations</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3 class="feature-title">Amazon Integration</h3>
+                    <p class="feature-description">Direct integration with Amazon Cortex for route data, scorecard metrics, and performance tracking.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Samsara Integration</h3>
+                    <p class="feature-description">Vehicle telematics, safety events, camera footage, and driver behavior analysis.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎥</div>
+                    <h3 class="feature-title">Netradyne Integration</h3>
+                    <p class="feature-description">AI-powered driver safety scoring, video event capture, and coaching workflows.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h3 class="feature-title">ADP Export</h3>
+                    <p class="feature-description">Seamless payroll export with proper formatting for ADP processing.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3 class="feature-title">Custom Reports</h3>
+                    <p class="feature-description">Build custom reports, schedule automated delivery, and export in multiple formats.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3 class="feature-title">Role-Based Access</h3>
+                    <p class="feature-description">Granular permissions ensure users only see relevant data for their role and stations.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3 class="feature-title">Trend Analysis</h3>
+                    <p class="feature-description">Historical tracking with visualizations to identify patterns and improvement opportunities.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Real-time Updates</h3>
+                    <p class="feature-description">Live data refresh for operational metrics, ensuring decisions based on current information.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Customizable Dashboards</h3>
+                    <p class="feature-description">Personalize your view with widgets and metrics most important to your role.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Mobile Responsive</h3>
+                    <p class="feature-description">Access critical information on any device - desktop, tablet, or mobile.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3 class="feature-title">Advanced Search</h3>
+                    <p class="feature-description">Quickly find drivers, routes, vehicles, or any data point across the platform.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📦</div>
+                    <h3 class="feature-title">Data Export</h3>
+                    <p class="feature-description">Export any data set to CSV, Excel, or PDF for external analysis and reporting.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="container">
+        <div class="role-section" style="text-align: center; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Ready to Transform Your DSP Operations?</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">Join forward-thinking delivery service partners who are scaling efficiently with our platform</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn btn-primary">Schedule a Demo</a>
+                <a href="#" class="btn btn-secondary">Contact Sales</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 DSP Management Platform. All rights reserved.</p>
+        <p>Built with ❤️ for Delivery Service Partners</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Scroll indicator
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('scrollIndicator').style.width = scrolled + '%';
+        });
+
+        // Nav scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Accordion toggle
+        function toggleAccordion(header) {
+            const item = header.parentElement;
+            const wasActive = item.classList.contains('active');
+
+            // Close all items in the same accordion
+            const accordion = item.parentElement;
+            accordion.querySelectorAll('.accordion-item').forEach(i => {
+                i.classList.remove('active');
+            });
+
+            // Toggle current item
+            if (!wasActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .role-section, .accordion-item').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
